@@ -24,8 +24,10 @@ final class LinkIconView: UIView {
     
     override func drawRect(rect: CGRect) {
         // Drawing code
-        let pdfPage = loadPdf()
-        let context = UIGraphicsGetCurrentContext()
+        guard
+            let pdfPage = loadPdf(),
+            let context = UIGraphicsGetCurrentContext() else { return }
+
         CGContextSaveGState(context)
         let boxRect = CGPDFPageGetBoxRect(pdfPage, .MediaBox)
         let xScale = bounds.size.width / boxRect.size.width
@@ -38,8 +40,10 @@ final class LinkIconView: UIView {
     }
     
     private func loadPdf() -> CGPDFPage? {
-        let pdfURL = NSBundle(forClass: self.dynamicType).URLForResource("LinkIcon", withExtension: "pdf")
-        let pdfDocument = CGPDFDocumentCreateWithURL(pdfURL as CFURLRef?)
+        guard
+            let pdfURL = NSBundle(forClass: self.dynamicType).URLForResource("LinkIcon", withExtension: "pdf"),
+            let pdfDocument = CGPDFDocumentCreateWithURL(pdfURL) else { return nil }
+
         return CGPDFDocumentGetPage(pdfDocument, 1)
     }
 }

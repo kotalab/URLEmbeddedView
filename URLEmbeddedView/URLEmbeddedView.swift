@@ -303,15 +303,19 @@ extension URLEmbeddedView {
     }
     
     public func load(completion: ((NSError?) -> Void)? = nil) {
-        guard let URL = URL else { return }
+        guard
+            let URL = URL,
+            let urlString = URL.absoluteString
+        else { return }
+
         prepareViewsForReuse()
         activityView.startAnimating()
-        uuidString = OGDataProvider.sharedInstance.fetchOGData(urlString: URL.absoluteString) { [weak self] ogData, error in
+        uuidString = OGDataProvider.sharedInstance.fetchOGData(urlString: urlString) { [weak self] ogData, error in
             dispatch_async(dispatch_get_main_queue()) {
                 self?.activityView.stopAnimating()
                 if let error = error {
                     self?.imageView.image = nil
-                    self?.titleLabel.attributedText = self?.textProvider[.NoDataTitle].attributedText(URL.absoluteString)
+                    self?.titleLabel.attributedText = self?.textProvider[.NoDataTitle].attributedText(urlString)
                     self?.descriptionLabel.attributedText = nil
                     self?.domainLabel.attributedText = self?.textProvider[.Domain].attributedText(URL.host ?? "")
                     self?.changeDomainImageViewWidthConstraint(0)
@@ -325,7 +329,7 @@ extension URLEmbeddedView {
                 
                 self?.linkIconView.hidden = true
                 if ogData.pageTitle.isEmpty {
-                    self?.titleLabel.attributedText = self?.textProvider[.NoDataTitle].attributedText(URL.absoluteString)
+                    self?.titleLabel.attributedText = self?.textProvider[.NoDataTitle].attributedText(urlString)
                 } else {
                     self?.titleLabel.attributedText = self?.textProvider[.Title].attributedText(ogData.pageTitle)
                 }
