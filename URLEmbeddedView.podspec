@@ -39,5 +39,5 @@ Pod::Spec.new do |s|
   s.frameworks = 'UIKit', 'CoreData', 'CoreGraphics'
   s.dependency 'MisterFusion', '~> 1.4'
   s.dependency 'Kanna', '~> 1.1.1'
-  s.dependency 'CryptoSwift', '~> 0.2'
+  s.dependency 'CryptoSwift', '= 0.5.2'
 end
